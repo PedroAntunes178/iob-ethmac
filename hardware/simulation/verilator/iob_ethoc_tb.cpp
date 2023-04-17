@@ -9,6 +9,30 @@
 #define CLK_PERIOD 100 // 10 ns
 #define ETH_CLK_PERIOD 25 // 10 ns
 
+#define ETH_MODER_ADR         0x0    // 0x0 
+#define ETH_INT_SOURCE_ADR    0x1    // 0x4 
+#define ETH_INT_MASK_ADR      0x2    // 0x8 
+#define ETH_IPGT_ADR          0x3    // 0xC 
+#define ETH_IPGR1_ADR         0x4    // 0x10
+#define ETH_IPGR2_ADR         0x5    // 0x14
+#define ETH_PACKETLEN_ADR     0x6    // 0x18
+#define ETH_COLLCONF_ADR      0x7    // 0x1C
+#define ETH_TX_BD_NUM_ADR     0x8    // 0x20
+#define ETH_CTRLMODER_ADR     0x9    // 0x24
+#define ETH_MIIMODER_ADR      0xA    // 0x28
+#define ETH_MIICOMMAND_ADR    0xB    // 0x2C
+#define ETH_MIIADDRESS_ADR    0xC    // 0x30
+#define ETH_MIITX_DATA_ADR    0xD    // 0x34
+#define ETH_MIIRX_DATA_ADR    0xE    // 0x38
+#define ETH_MIISTATUS_ADR     0xF    // 0x3C
+#define ETH_MAC_ADDR0_ADR     0x10   // 0x40
+#define ETH_MAC_ADDR1_ADR     0x11   // 0x44
+#define ETH_HASH0_ADR         0x12   // 0x48
+#define ETH_HASH1_ADR         0x13   // 0x4C
+#define ETH_TX_CTRL_ADR       0x14   // 0x50
+#define ETH_RX_CTRL_ADR       0x15   // 0x54
+#define ETH_DBG_ADR           0x16   // 0x58
+
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;
 Viob_ethoc_sim_wrapper* dut = NULL;
@@ -69,14 +93,20 @@ int main(int argc, char **argv, char **env){
   dut->wdata = 0;
   dut->wstrb = 0;
 
-  printf("\nTestbench started!\n\n");
-
   // Reset sequence
   Timer(CLK_PERIOD);
   dut->arst_i = !(dut->arst_i);
   Timer(CLK_PERIOD);
   dut->arst_i = !(dut->arst_i);
+  printf("\nTestbench started!\n\n");
+  // Start of testbench
 
+  printf("Enable loop back, TX is looped back to the RX.");
+  set_inputs(ETH_MODER_ADR, 0x0000A080, 0xff);
+  printf("Enable full-duplex mode.");
+  set_inputs(ETH_MODER_ADR, 0x0000A480, 0xff);
+
+  // End of testbench
   Timer(CLK_PERIOD);
   printf("\nTestbench finished!\n\n");
   dut->final();

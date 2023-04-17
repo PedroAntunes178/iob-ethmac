@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "ethmac_defines.v"
 
 `define FREQ 100000000
 `define ECLK_FREQ 25000000
@@ -53,6 +54,13 @@ module iob_ethoc_tb;
 
     $display("Testbench Started!");
     // Start of testbench
+
+    $display("Enable loop back, TX is looped back to the RX.");
+    set_inputs(`ETH_MODER_ADR, 32'h0000A080, 8'hff);
+    wait_responce(read_reg);
+    $display("Enable full-duplex mode.");
+    set_inputs(`ETH_MODER_ADR, 32'h0000A480, 8'hff);
+    wait_responce(read_reg);
 
     // End of testbench
     @(posedge clk_i) #1 $display("Testbench finished!");
