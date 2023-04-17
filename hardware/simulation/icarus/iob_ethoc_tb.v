@@ -7,7 +7,7 @@
 module iob_ethoc_tb;
 
   localparam clk_per = 1000000000/`FREQ;
-  localparam eck_per = 1000000000/`ECLK_FREQ;
+  localparam eck_per = 250000000/`ECLK_FREQ;
 
   localparam INTERRUPT_MASK_ADDR = 16'h0000;
   localparam IF_CONTROL_ADDR     = 16'h0001;
@@ -103,7 +103,7 @@ module iob_ethoc_tb;
     address = set_address;
     wdata = set_data;
     wstrb = set_strb;
-    @ (posedge clk_i) #1 valid = 0;
+    @ (posedge clk_i) #1 valid = 0; // weird bug caused by delay
     wstrb = 0;
     end
   endtask
