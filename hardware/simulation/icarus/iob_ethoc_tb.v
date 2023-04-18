@@ -7,7 +7,7 @@
 module iob_ethoc_tb;
 
   localparam clk_per = 1000000000/`FREQ;
-  localparam eck_per = 250000000/`ECLK_FREQ;
+  localparam eck_per = 1000000000/`ECLK_FREQ;
 
   localparam INTERRUPT_MASK_ADDR = 16'h0000;
   localparam IF_CONTROL_ADDR     = 16'h0001;

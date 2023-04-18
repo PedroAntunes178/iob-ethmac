@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns/1ps
 `include "ethmac_defines.v"
 
 module iob_ethoc #(
@@ -49,7 +49,8 @@ module iob_ethoc #(
   wire m_ETH_wb_ack;
   wire m_ETH_wb_err;
 
-  // IOb2Whichbone wires
+  // IOb2Wishbone wires
+  wire valid_e;
   wire valid_r;
   wire [ADDR_W-1:0] s_wb_addr_in;
   wire [DATA_W-1:0] s_wb_data_in;
@@ -69,18 +70,19 @@ module iob_ethoc #(
   assign mii_crs     = 1'b0; // The media is always in an idle state
   // In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored.
   
-  // IOb2Whichbone logic
+  // IOb2Wishbone logic
   assign s_wb_addr_in = address[ADDR_W-1:0];
   assign s_wb_data_in = wdata;
-  assign rdata = s_wb_data_out;
-  assign s_wb_we_in = |wstrb;
-  assign s_wb_cyc_in = ready? valid:valid|valid_r;
-  assign s_wb_stb_in = valid;
   assign s_wb_select_in = wstrb;
+  assign s_wb_we_in = |wstrb;
+  assign s_wb_cyc_in = valid|valid_r;
+  assign s_wb_stb_in = valid|valid_r;
   //assign wb_select_in = 1<<address[1:0];
   assign ready = s_wb_ack_out|s_wb_error_out;
+  assign rdata = s_wb_data_out;
 
-  iob_reg #(1,0) iob_reg_valid (clk, rst, ready, valid, 1'b1, valid_r);
+  assign valid_e = valid|ready;
+  iob_reg #(1,0) iob_reg_valid (clk, rst, 1'b0, valid_e, valid, valid_r);
 
   // Connecting Ethernet top module
   ethmac eth_top (
