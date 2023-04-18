@@ -9,7 +9,6 @@ ETH_SRC_DIR:=$(ETH_HW_DIR)/src
 
 #include iob-lib hardware
 include $(LIB_DIR)/hardware/iob_reg/hardware.mk
-include $(LIB_DIR)/hardware/ram/iob_ram_sp_be/hardware.mk
 
 #include files
 VHDR+=$(wildcard $(ETH_INC_DIR)/*.vh) 

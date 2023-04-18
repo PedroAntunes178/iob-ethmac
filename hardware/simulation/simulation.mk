@@ -16,6 +16,7 @@ DEFINE+=$(defmacro)VCD
 endif
 
 include $(ETH_DIR)/hardware/hardware.mk
+include $(MEM_DIR)/hardware/ram/iob_ram_sp_be/hardware.mk
 
 #define macros
 DEFINE+=$(defmacro)DATA_W=$(DATA_W)

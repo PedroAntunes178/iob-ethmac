@@ -26,6 +26,8 @@ module iob_ethoc_sim_wrapper #(
   end
 `endif
 
+  localparam SRAM_ADDR_W = 13;
+
   // ETH interface
   wire       mii_rx_clk;
   wire [3:0] mii_rxd_r;
@@ -39,6 +41,14 @@ module iob_ethoc_sim_wrapper #(
   wire       mii_mdc;
   wire       mii_mdio;
 
+  // IOb master interface
+  wire                m_valid;
+  wire [31:0]         m_addr;
+  wire [DATA_W/8-1:0] m_wstrb;
+  wire [DATA_W-1:0]   m_wdata;
+  wire [DATA_W-1:0]   m_rdata;
+  wire                m_ready;
+
   assign mii_rx_er = 1'b0;
   iob_reg #(4,0) iob_reg_rxd (eth_clk_i, arst_i, 1'b0, 1'b1, mii_txd, mii_rxd_r);
   iob_reg #(1,0) iob_reg_rx_dv (eth_clk_i, arst_i, 1'b0, 1'b1, mii_tx_en, mii_rx_dv_r);
@@ -47,18 +57,24 @@ module iob_ethoc_sim_wrapper #(
     //IOb-bus Parameters
     .ADDR_W(ADDR_W),
     .DATA_W(DATA_W),
-    .HEXFILE("test"),
     .TARGET("SIM")
   ) eth_0 (
     .clk(clk_i),
     .rst(arst_i),
 
-    .valid(valid),
-    .address(address),
-    .wdata(wdata),
-    .wstrb(wstrb),
-    .rdata(rdata),
-    .ready(ready),
+    .s_valid(valid),
+    .s_address(address),
+    .s_wdata(wdata),
+    .s_wstrb(wstrb),
+    .s_rdata(rdata),
+    .s_ready(ready),
+
+    .m_valid(m_valid),
+    .m_addr(m_addr),
+    .m_wdata(m_wdata),
+    .m_wstrb(m_wstrb),
+    .m_rdata(m_rdata),
+    .m_ready(m_ready),
 
     .mii_rx_clk_i(mii_rx_clk),
     .mii_rxd_i(mii_rxd_r),
@@ -77,5 +93,23 @@ module iob_ethoc_sim_wrapper #(
 
   assign mii_tx_clk = eth_clk_i;
   assign mii_rx_clk = eth_clk_i;
+
+  // Simulation memory
+  iob_ram_sp_be #(
+    .HEXFILE("test"),
+    .ADDR_W(SRAM_ADDR_W-2),
+    .DATA_W(DATA_W)
+  ) main_mem_byte (
+    .clk   (clk_i),
+
+    // data port
+    .en   (m_valid),
+    .addr (m_addr[SRAM_ADDR_W-1:2]),
+    .we   (m_wstrb),
+    .din  (m_wdata),
+    .dout (m_rdata)
+    );
+  
+  iob_reg #(1,0) iob_reg_s_ready (clk_i, arst_i, 1'b0, 1'b1, m_valid, m_ready);
 
 endmodule

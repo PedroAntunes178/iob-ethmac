@@ -9,13 +9,6 @@ module iob_ethoc_tb;
   localparam clk_per = 1000000000/`FREQ;
   localparam eck_per = 1000000000/`ECLK_FREQ;
 
-  localparam INTERRUPT_MASK_ADDR = 16'h0000;
-  localparam IF_CONTROL_ADDR     = 16'h0001;
-  localparam READ_FIFO_ADDR      = 16'h0002;
-  localparam WRITE_FIFO_ADDR     = 16'h0003;
-  localparam TX_START_ADDR       = 16'h0004;
-
-
   //clock & ethernet clock
   reg                clk_i = 1;
   reg                eth_clk_i = 1;
