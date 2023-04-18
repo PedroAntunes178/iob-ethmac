@@ -3,9 +3,9 @@
 
 module iob_ethoc #(
     //IOb-bus Parameters
-    parameter ADDR_W      = 16,
+    parameter ADDR_W      = 13,
     parameter DATA_W      = 32,
-    parameter SRAM_ADDR_W = 13,
+    parameter SRAM_ADDR_W = 12, // SRAM_ADDR starts at 0x800
     parameter HEXFILE     = "none",
     parameter TARGET      = "XILINX"
   )(
@@ -72,6 +72,9 @@ module iob_ethoc #(
   wire s_wb_ack_out;
   wire s_wb_error_out;
 
+  // Merge IOb memory access and Ethernet memory access
+  wire iob_memory_access_e;
+
   // ETHERNET logic
   // // Connecting Ethernet PHY Module
   assign mii_mdio_io = mii_mdo_OE ? mii_mdo_O : 1'bz ;
@@ -83,8 +86,8 @@ module iob_ethoc #(
   assign s_valid = (m_ETH_wb_cyc & m_ETH_wb_stb)&(~s_ready);
   assign s_addr  = m_ETH_wb_adr[SRAM_ADDR_W:2];
   assign s_wstrb = m_ETH_wb_we? m_ETH_wb_sel:4'h0;
-  assign s_wdata = m_ETH_wb_dat_in;
-  assign m_ETH_wb_dat_out = s_rdata;
+  assign s_wdata = m_ETH_wb_dat_out;
+  assign m_ETH_wb_dat_in = s_rdata;
   assign m_ETH_wb_ack = s_ready;
   assign m_ETH_wb_err = 1'b0;
   iob_reg #(1,0) iob_reg_s_ready (clk, rst, 1'b0, 1'b1, s_valid, s_ready);
@@ -103,6 +106,23 @@ module iob_ethoc #(
   assign valid_e = valid|ready;
   iob_reg #(1,0) iob_reg_valid (clk, rst, 1'b0, valid_e, valid, valid_r);
   iob_reg #(DATA_W/8,0) iob_reg_wstrb (clk, rst, 1'b0, valid, wstrb, wstrb_r);
+
+  // Merge IOb memory access and Ethernet memory access
+  assign iob_memory_access_e = address > 16'h00ff;// SRAM_ADDR starts at 0x800
+  //iob_merge #(
+  //  .N_MASTERS(2)
+  //) ibus_merge (
+  //  .clk    ( clk                      ),
+  //  .rst    ( rst                      ),
+  //
+  //  //master
+  //  .m_req  ( {ram_w_req, ram_r_req}   ),
+  //  .m_resp ( {ram_w_resp, ram_r_resp} ),
+  //
+  //  //slave  
+  //  .s_req  ( {s_valid, s_addr, s_wstrb, s_wdata} ),
+  //  .s_resp ( {s_rdata, s_ready} )
+  //  );
 
   // Connecting Ethernet top module
   ethmac eth_top (

@@ -47,6 +47,7 @@ module iob_ethoc_sim_wrapper #(
     //IOb-bus Parameters
     .ADDR_W(ADDR_W),
     .DATA_W(DATA_W),
+    .HEXFILE("test"),
     .TARGET("SIM")
   ) eth_0 (
     .clk(clk_i),

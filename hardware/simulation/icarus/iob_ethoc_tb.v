@@ -67,8 +67,23 @@ module iob_ethoc_tb;
     $display("Value: %x.", read_reg);
 
     // Store transmission buffer to memory
-    // Prepare frame transmission, ch.4.2.3
+    // // memory is being initialised with data
     // Prepare frame reception, ch.4.2.4
+    $display("Prepare frame reception.");
+    set_inputs(32'h604, 32'h80, 8'hf);
+    wait_responce(read_reg);
+    set_inputs(32'h600, 32'h00108000, 8'hf);
+    wait_responce(read_reg);
+    set_inputs(`ETH_MODER_ADR, 32'h0000A481, 8'hf);
+    wait_responce(read_reg);
+    // Prepare frame transmission, ch.4.2.3
+    $display("Prepare frame transmission.");
+    set_inputs(32'h404, 32'h0, 8'hf);
+    wait_responce(read_reg);
+    set_inputs(32'h400, 32'h00109000, 8'hf);
+    wait_responce(read_reg);
+    set_inputs(`ETH_MODER_ADR, 32'h0000A483, 8'hf);
+    wait_responce(read_reg);
     // Load received buffer from memory
 
     // End of testbench
