@@ -61,7 +61,7 @@ module iob_ethoc_sim_wrapper #(
 
     .mii_rx_clk_i(mii_rx_clk),
     .mii_rxd_i(mii_rxd_r),
-    .mii_rx_dv_i(mii_rx_dv),
+    .mii_rx_dv_i(mii_rx_dv_r),
     .mii_rx_er_i(mii_rx_er),
     .mii_rx_ctrl_i(mii_rx_ctrl),
     .mii_tx_clk_i(mii_tx_clk),

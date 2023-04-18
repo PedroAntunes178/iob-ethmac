@@ -3,9 +3,11 @@
 
 module iob_ethoc #(
     //IOb-bus Parameters
-    parameter ADDR_W   = 16,
-    parameter DATA_W   = 32,
-    parameter TARGET = "XILINX"
+    parameter ADDR_W      = 16,
+    parameter DATA_W      = 32,
+    parameter SRAM_ADDR_W = 13,
+    parameter HEXFILE     = "none",
+    parameter TARGET      = "XILINX"
   )(
     input wire clk,
     input wire rst,
@@ -48,6 +50,13 @@ module iob_ethoc #(
   wire m_ETH_wb_stb;
   wire m_ETH_wb_ack;
   wire m_ETH_wb_err;
+  // // Ethernet memory access, Wishbone2IOb
+  wire                   s_valid;
+  wire [SRAM_ADDR_W-3:0] s_addr;
+  wire [DATA_W/8-1:0]    s_wstrb;
+  wire [DATA_W-1:0]      s_wdata;
+  wire [DATA_W-1:0]      s_rdata;
+  wire                   s_ready;
 
   // IOb2Wishbone wires
   wire valid_e;
@@ -69,7 +78,16 @@ module iob_ethoc #(
   assign mii_mdi_I   = mii_mdio_io;
   assign mii_coll    = 1'b0; // No collision detection
   assign mii_crs     = 1'b0; // The media is always in an idle state
-  // In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored.
+  /* In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored. */
+  // // Ethernet memory access
+  assign s_valid = (m_ETH_wb_cyc & m_ETH_wb_stb)&(~s_ready);
+  assign s_addr  = m_ETH_wb_adr[SRAM_ADDR_W:2];
+  assign s_wstrb = m_ETH_wb_we? m_ETH_wb_sel:4'h0;
+  assign s_wdata = m_ETH_wb_dat_in;
+  assign m_ETH_wb_dat_out = s_rdata;
+  assign m_ETH_wb_ack = s_ready;
+  assign m_ETH_wb_err = 1'b0;
+  iob_reg #(1,0) iob_reg_s_ready (clk, rst, 1'b0, 1'b1, s_valid, s_ready);
   
   // IOb2Wishbone logic
   assign s_wb_addr_in = address[ADDR_W-1:0];
@@ -150,6 +168,19 @@ module iob_ethoc #(
   `endif
   );
 
+  iob_ram_sp_be #(
+    .HEXFILE(HEXFILE),
+    .ADDR_W(SRAM_ADDR_W-2),
+    .DATA_W(DATA_W)
+  ) main_mem_byte (
+    .clk   (clk),
 
+    // data port
+    .en   (s_valid),
+    .addr (s_addr),
+    .we   (s_wstrb),
+    .din  (s_wdata),
+    .dout (s_rdata)
+    );
 
 endmodule

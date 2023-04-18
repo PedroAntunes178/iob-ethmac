@@ -66,6 +66,11 @@ module iob_ethoc_tb;
     wait_responce(read_reg);
     $display("Value: %x.", read_reg);
 
+    // Store transmission buffer to memory
+    // Prepare frame transmission, ch.4.2.3
+    // Prepare frame reception, ch.4.2.4
+    // Load received buffer from memory
+
     // End of testbench
     @(posedge clk_i) #1 $display("Testbench finished!");
 

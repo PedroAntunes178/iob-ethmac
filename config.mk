@@ -36,6 +36,7 @@ ETH_HW_DIR=$(ETH_DIR)/hardware
 ETH_SIM_DIR=$(ETH_HW_DIR)/simulation/$(SIMULATOR)
 
 LIB_DIR?=$(ETH_DIR)/submodules/LIB
+MEM_DIR:=$(LIB_DIR)
 VETH_DIR?=$(ETH_DIR)/submodules/verilog-ethernet
 
 #RULES
