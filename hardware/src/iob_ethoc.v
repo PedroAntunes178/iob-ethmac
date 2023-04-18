@@ -52,6 +52,7 @@ module iob_ethoc #(
   // IOb2Wishbone wires
   wire valid_e;
   wire valid_r;
+  wire [DATA_W/8-1:0] wstrb_r;
   wire [ADDR_W-1:0] s_wb_addr_in;
   wire [DATA_W-1:0] s_wb_data_in;
   wire [DATA_W-1:0] s_wb_data_out;
@@ -73,8 +74,8 @@ module iob_ethoc #(
   // IOb2Wishbone logic
   assign s_wb_addr_in = address[ADDR_W-1:0];
   assign s_wb_data_in = wdata;
-  assign s_wb_select_in = wstrb;
-  assign s_wb_we_in = |wstrb;
+  assign s_wb_select_in = s_wb_we_in? (valid? wstrb:wstrb_r):4'hf;
+  assign s_wb_we_in = valid? |wstrb:|wstrb_r;
   assign s_wb_cyc_in = valid|valid_r;
   assign s_wb_stb_in = valid|valid_r;
   //assign wb_select_in = 1<<address[1:0];
@@ -83,6 +84,7 @@ module iob_ethoc #(
 
   assign valid_e = valid|ready;
   iob_reg #(1,0) iob_reg_valid (clk, rst, 1'b0, valid_e, valid, valid_r);
+  iob_reg #(DATA_W/8,0) iob_reg_wstrb (clk, rst, 1'b0, valid, wstrb, wstrb_r);
 
   // Connecting Ethernet top module
   ethmac eth_top (

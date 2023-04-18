@@ -41,7 +41,7 @@ module iob_ethoc_sim_wrapper #(
 
   assign mii_rx_er = 1'b0;
   iob_reg #(4,0) iob_reg_rxd (eth_clk_i, arst_i, 1'b0, 1'b1, mii_txd, mii_rxd_r);
-  iob_reg #(4,0) iob_reg_rx_dv (eth_clk_i, arst_i, 1'b0, 1'b1, mii_tx_en, mii_rx_dv_r);
+  iob_reg #(1,0) iob_reg_rx_dv (eth_clk_i, arst_i, 1'b0, 1'b1, mii_tx_en, mii_rx_dv_r);
 
   iob_ethoc #(
     //IOb-bus Parameters

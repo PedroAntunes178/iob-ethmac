@@ -56,11 +56,15 @@ module iob_ethoc_tb;
     // Start of testbench
 
     $display("Enable loop back, TX is looped back to the RX.");
-    set_inputs(`ETH_MODER_ADR, 32'h0000A080, 8'hff);
+    set_inputs(`ETH_MODER_ADR, 32'h0000A080, 4'hf);
     wait_responce(read_reg);
     $display("Enable full-duplex mode.");
-    set_inputs(`ETH_MODER_ADR, 32'h0000A480, 8'hff);
+    set_inputs(`ETH_MODER_ADR, 32'h0000A480, 8'hf);
     wait_responce(read_reg);
+    $display("Reading Mode Register.");
+    set_inputs(`ETH_MODER_ADR, 32'h0, 4'h0);
+    wait_responce(read_reg);
+    $display("Value: %x.", read_reg);
 
     // End of testbench
     @(posedge clk_i) #1 $display("Testbench finished!");
