@@ -19,17 +19,19 @@ module iob_ethoc_tb;
   reg                arst_i = 0;
 
   // DUT inputs
-  reg                valid;
-  reg [`ADDR_W-1:0]  address;
-  reg [`DATA_W-1:0]  wdata;
+  reg                 valid;
+  reg [`ADDR_W-1:0]   address;
+  reg [`DATA_W-1:0]   wdata;
   reg [`DATA_W/8-1:0] wstrb;
 
   // DUT outputs
-  wire                ready;
-  wire [`DATA_W-1:0]  rdata;
+  wire               ready;
+  wire [`DATA_W-1:0] rdata;
+  wire               interrupt;
 
-  integer             i = 0;
-  reg [31:0]          read_reg;
+  // Testbench variables
+  integer    i = 0;
+  reg [31:0] read_reg;
 
   initial begin
     //assert reset
@@ -65,7 +67,7 @@ module iob_ethoc_tb;
     $display("Prepare frame reception.");
     set_inputs(32'h604, 32'h80, 8'hf);
     wait_responce(read_reg);
-    set_inputs(32'h600, 32'h00108000, 8'hf);
+    set_inputs(32'h600, 32'h0010C000, 8'hf);
     wait_responce(read_reg);
     set_inputs(`ETH_MODER_ADR, 32'h0000A481, 8'hf);
     wait_responce(read_reg);
@@ -73,10 +75,18 @@ module iob_ethoc_tb;
     $display("Prepare frame transmission.");
     set_inputs(32'h404, 32'h0, 8'hf);
     wait_responce(read_reg);
-    set_inputs(32'h400, 32'h00109000, 8'hf);
+    set_inputs(32'h400, 32'h0010D000, 8'hf);
     wait_responce(read_reg);
     set_inputs(`ETH_MODER_ADR, 32'h0000A483, 8'hf);
     wait_responce(read_reg);
+    // Wait for interrupt generated when frame is received
+    // set_inputs(`ETH_INT_MASK_ADR, 32'h07f, 8'hf);
+    // wait_responce(read_reg);
+    //while(~interrupt) begin
+    //  set_inputs(32'h600, 32'h0, 8'h0);
+    //  wait_responce(read_reg);
+    //end
+    $display("Value read from buffer descriptor: %x", read_reg);
     // Load received buffer from memory
 
     // End of testbench
@@ -98,7 +108,9 @@ module iob_ethoc_tb;
     .wdata   (wdata),
     .wstrb   (wstrb),
     .rdata   (rdata),
-    .ready   (ready)
+    .ready   (ready),
+
+    .ethernet_interrupt(interrupt)
     );
 
   task wait_responce;

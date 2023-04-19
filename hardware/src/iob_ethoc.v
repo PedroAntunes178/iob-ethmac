@@ -70,9 +70,6 @@ module iob_ethoc #(
   wire s_wb_ack_out;
   wire s_wb_error_out;
 
-  // Merge IOb memory access and Ethernet memory access
-  wire iob_memory_access_e;
-
   // ETHERNET logic
   // // Connecting Ethernet PHY Module
   assign mii_mdio_io = mii_mdo_OE ? mii_mdo_O : 1'bz ;
@@ -85,7 +82,7 @@ module iob_ethoc #(
   assign m_addr  = m_ETH_wb_adr;
   assign m_wstrb = m_ETH_wb_we? m_ETH_wb_sel:4'h0;
   assign m_wdata = m_ETH_wb_dat_out;
-  assign m_ETH_wb_dat_in = s_rdata;
+  assign m_ETH_wb_dat_in = m_rdata;
   assign m_ETH_wb_ack = m_ready;
   assign m_ETH_wb_err = 1'b0;
   
