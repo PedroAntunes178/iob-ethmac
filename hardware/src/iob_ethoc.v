@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `include "ethmac_defines.v"
 
-module iob_ethoc #(
+module iob_ethmac #(
     //IOb-bus Parameters
     parameter ADDR_W      = 12,
     parameter DATA_W      = 32,

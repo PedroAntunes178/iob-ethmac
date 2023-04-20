@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Viob_ethoc_sim_wrapper.h"
+#include "Viob_ethmac_sim_wrapper.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
@@ -35,7 +35,7 @@
 
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;
-Viob_ethoc_sim_wrapper* dut = NULL;
+Viob_ethmac_sim_wrapper* dut = NULL;
 
 double sc_time_stamp(){
   return main_time;
@@ -74,7 +74,7 @@ int set_inputs(int address, int data, int strb){
 int main(int argc, char **argv, char **env){
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-  dut = new Viob_ethoc_sim_wrapper;
+  dut = new Viob_ethmac_sim_wrapper;
   int errors;
   main_time = 0;
 

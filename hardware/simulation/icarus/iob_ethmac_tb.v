@@ -4,7 +4,7 @@
 `define FREQ 100000000
 `define ECLK_FREQ 25000000
 
-module iob_ethoc_tb;
+module iob_ethmac_tb;
 
   localparam clk_per = 1000000000/`FREQ;
   localparam eck_per = 1000000000/`ECLK_FREQ;
@@ -109,7 +109,7 @@ module iob_ethoc_tb;
     $finish;
   end
 
-  iob_ethoc_sim_wrapper #(
+  iob_ethmac_sim_wrapper #(
     `ADDR_W, `DATA_W
   ) eth_uut (
     .clk_i     (clk_i),

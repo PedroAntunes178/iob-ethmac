@@ -6,7 +6,7 @@
 
 SHELL = bash
 
-TOP_MODULE:=iob_ethoc
+TOP_MODULE:=iob_ethmac
 
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
@@ -17,7 +17,7 @@ DATA_W ?=32
 ADDR_W ?=12
 
 #ETH DIRECTORY ON REMOTE MACHINES
-REMOTE_ETH_DIR ?=sandbox/iob_ethoc
+REMOTE_ETH_DIR ?=sandbox/iob_ethmac
 
 #SIMULATION
 #default simulator running locally or remotely

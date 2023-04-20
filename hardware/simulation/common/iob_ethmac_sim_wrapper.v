@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module iob_ethoc_sim_wrapper #(
+module iob_ethmac_sim_wrapper #(
   parameter ADDR_W  = 16,
   parameter DATA_W  = 32
   ) (
@@ -21,8 +21,8 @@ module iob_ethoc_sim_wrapper #(
 
 `ifdef VCD
   initial begin
-    $dumpfile("iob_ethoc.vcd");
-    $dumpvars(0, iob_ethoc_sim_wrapper);
+    $dumpfile("iob_ethmac.vcd");
+    $dumpvars(0, iob_ethmac_sim_wrapper);
   end
 `endif
 
@@ -53,7 +53,7 @@ module iob_ethoc_sim_wrapper #(
   iob_reg #(4,0) iob_reg_rxd (eth_clk_i, arst_i, 1'b0, 1'b1, mii_txd, mii_rxd_r);
   iob_reg #(1,0) iob_reg_rx_dv (eth_clk_i, arst_i, 1'b0, 1'b1, mii_tx_en, mii_rx_dv_r);
 
-  iob_ethoc #(
+  iob_ethmac #(
     //IOb-bus Parameters
     .ADDR_W(ADDR_W),
     .DATA_W(DATA_W),

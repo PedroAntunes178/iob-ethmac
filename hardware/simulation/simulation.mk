@@ -24,7 +24,7 @@ DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
 DEFINE+=$(defmacro)N_CORES=$(N_CORES)
 
 #testbench sources
-VSRC+=$(ETH_DIR)/hardware/simulation/common/iob_ethoc_sim_wrapper.v
+VSRC+=$(ETH_DIR)/hardware/simulation/common/iob_ethmac_sim_wrapper.v
 
 # TEST FILE (Contains frame to transfer)
 TEST_FILE = $(ETH_DIR)/hardware/simulation/common/test.txt
@@ -45,7 +45,7 @@ endif
 
 run: sim
 ifeq ($(VCD),1)
-	if [ ! "`pgrep -u $(USER) gtkwave`" ]; then gtkwave -a ../waves.gtkw iob_ethoc.vcd; fi &
+	if [ ! "`pgrep -u $(USER) gtkwave`" ]; then gtkwave -a ../waves.gtkw iob_ethmac.vcd; fi &
 endif
 
 sim:
@@ -65,14 +65,14 @@ endif
 
 #clean target common to all simulators
 clean-remote: ethernet_hw_clean
-	@rm -f iob_ethoc.vcd
+	@rm -f iob_ethmac.vcd
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ETH_DIR) ]; then mkdir -p $(REMOTE_ETH_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ETH_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ETH_DIR)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ETH_DIR) sim-clean SIMULATOR=$(SIMULATOR)'
 endif
 
-.PRECIOUS: iob_ethoc.vcd
+.PRECIOUS: iob_ethmac.vcd
 
 .PHONY: build run sim \
 	kill-remote-sim clean-remote kill-sim

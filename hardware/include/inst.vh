@@ -3,7 +3,7 @@
   //
   // ETHERNET
   //
-  iob_ethoc #(
+  iob_ethmac #(
     //IOb-bus Parameters
     .ADDR_W(ADDR_W),
     .DATA_W(DATA_W),
@@ -12,12 +12,19 @@
     .clk(clk_i),
     .rst(arst_i),
 
-    .valid(valid),
-    .address(address),
-    .wdata(wdata),
-    .wstrb(wstrb),
-    .rdata(rdata),
-    .ready(ready),
+    .s_valid(valid),
+    .s_address(address),
+    .s_wdata(wdata),
+    .s_wstrb(wstrb),
+    .s_rdata(rdata),
+    .s_ready(ready),
+
+    .m_valid(m_eth_valid),
+    .m_address(m_eth_address),
+    .m_wdata(m_eth_wdata),
+    .m_wstrb(m_eth_wstrb),
+    .m_rdata(m_eth_rdata),
+    .m_ready(m_eth_ready),
 
     .mii_rx_clk_i(mii_rx_clk),
     .mii_rxd_i(mii_rxd_r),
