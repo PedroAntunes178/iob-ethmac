@@ -2,3 +2,4 @@ hardware/simulation/icarus/a.out
 hardware/simulation/verilator/Viob_ethoc_sim_wrapper
 hardware/simulation/verilator/obj_dir/*
 hardware/simulation/*/iob_ethoc.vcd
+hardware/simulation/*/test.hex

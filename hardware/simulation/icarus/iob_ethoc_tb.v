@@ -86,7 +86,16 @@ module iob_ethoc_tb;
     end
     set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
     wait_responce(read_reg);
-    $display("Received interrupt signal! INT_SRC value: %x", read_reg);
+    if(read_reg&32'h1) begin
+      $display("Received Transmit Buffer Mask (TXB_M) interrupt signal! INT_SRC value: %x", read_reg);
+      set_inputs(32'h4, 32'h1, 8'hf); // Reading Interrupt Sources register
+      wait_responce(read_reg);
+      $display("Cleaned Transmit Buffer Mask (TXB_M) interrupt signal!");
+    end
+    while(~(read_reg&32'h4)) begin
+      set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
+      wait_responce(read_reg);
+    end
     set_inputs(32'h600, 32'h0, 8'h0);
     wait_responce(read_reg);
     $display("Value read from receiving buffer descriptor: %x", read_reg);
@@ -100,7 +109,7 @@ module iob_ethoc_tb;
   end
 
   initial begin
-    #10000 $display("ERROR: Forced finish!");
+    #100000 $display("ERROR: Forced finish!");
     $finish;
   end
 
