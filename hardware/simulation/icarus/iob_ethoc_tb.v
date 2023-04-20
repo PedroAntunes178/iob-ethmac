@@ -51,13 +51,13 @@ module iob_ethoc_tb;
     // Start of testbench
 
     $display("Enable loop back, TX is looped back to the RX.");
-    set_inputs(`ETH_MODER_ADR, 32'h0000A080, 4'hf);
+    set_inputs(`ETH_MODER_ADR<<2, 32'h0000A080, 4'hf);
     wait_responce(read_reg);
     $display("Enable full-duplex mode.");
-    set_inputs(`ETH_MODER_ADR, 32'h0000A480, 8'hf);
+    set_inputs(`ETH_MODER_ADR<<2, 32'h0000A480, 8'hf);
     wait_responce(read_reg);
     $display("Reading Mode Register.");
-    set_inputs(`ETH_MODER_ADR, 32'h0, 4'h0);
+    set_inputs(`ETH_MODER_ADR<<2, 32'h0, 4'h0);
     wait_responce(read_reg);
     $display("Value: %x.", read_reg);
 
@@ -75,25 +75,25 @@ module iob_ethoc_tb;
     wait_responce(read_reg);
     set_inputs(32'h400, 32'h0020F000, 8'hf);
     wait_responce(read_reg);
-    set_inputs(`ETH_MODER_ADR, 32'h0000A483, 8'hf);
+    set_inputs(`ETH_MODER_ADR<<2, 32'h0000A483, 8'hf);
     wait_responce(read_reg);
     // Wait for interrupt generated when frame is received
-    set_inputs(32'h08, 32'h07f, 8'hf);
+    set_inputs(`ETH_INT_MASK_ADR<<2, 32'h07f, 8'hf);
     wait_responce(read_reg);
     while(~interrupt) begin
-      set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
+      set_inputs(`ETH_INT_SOURCE_ADR<<2, 32'h0, 8'h0); // Reading Interrupt Sources register
       wait_responce(read_reg);
     end
-    set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
+    set_inputs(`ETH_INT_SOURCE_ADR<<2, 32'h0, 8'h0); // Reading Interrupt Sources register
     wait_responce(read_reg);
     if(read_reg&32'h1) begin
       $display("Received Transmit Buffer Mask (TXB_M) interrupt signal! INT_SRC value: %x", read_reg);
-      set_inputs(32'h4, 32'h1, 8'hf); // Reading Interrupt Sources register
+      set_inputs(`ETH_INT_SOURCE_ADR<<2, 32'h1, 8'hf); // Reading Interrupt Sources register
       wait_responce(read_reg);
       $display("Cleaned Transmit Buffer Mask (TXB_M) interrupt signal!");
     end
     while(~(read_reg&32'h4)) begin
-      set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
+      set_inputs(`ETH_INT_SOURCE_ADR<<2, 32'h0, 8'h0); // Reading Interrupt Sources register
       wait_responce(read_reg);
     end
     set_inputs(32'h600, 32'h0, 8'h0);
