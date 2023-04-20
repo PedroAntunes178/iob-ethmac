@@ -1,3 +1,6 @@
 [submodule "submodules/LIB"]
 	path = submodules/LIB
 	url = git@github.com:IObundle/iob-lib.git
+[submodule "submodules/ETHMAC"]
+	path = submodules/ETHMAC
+	url = git@github.com:IObundle/ethmac.git
