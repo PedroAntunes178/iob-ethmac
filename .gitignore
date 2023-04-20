@@ -1,0 +1,5 @@
+hardware/simulation/icarus/a.out
+hardware/simulation/verilator/Viob_ethmac_sim_wrapper
+hardware/simulation/verilator/obj_dir/*
+hardware/simulation/*/iob_ethmac.vcd
+hardware/simulation/*/test.hex
