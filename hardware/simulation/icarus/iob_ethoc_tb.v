@@ -67,32 +67,40 @@ module iob_ethoc_tb;
     $display("Prepare frame reception.");
     set_inputs(32'h604, 32'h80, 8'hf);
     wait_responce(read_reg);
-    set_inputs(32'h600, 32'h0010C000, 8'hf);
-    wait_responce(read_reg);
-    set_inputs(`ETH_MODER_ADR, 32'h0000A481, 8'hf);
+    set_inputs(32'h600, 32'h0020E000, 8'hf);
     wait_responce(read_reg);
     // Prepare frame transmission, ch.4.2.3
     $display("Prepare frame transmission.");
     set_inputs(32'h404, 32'h0, 8'hf);
     wait_responce(read_reg);
-    set_inputs(32'h400, 32'h0010D000, 8'hf);
+    set_inputs(32'h400, 32'h0020F000, 8'hf);
     wait_responce(read_reg);
     set_inputs(`ETH_MODER_ADR, 32'h0000A483, 8'hf);
     wait_responce(read_reg);
     // Wait for interrupt generated when frame is received
-    // set_inputs(`ETH_INT_MASK_ADR, 32'h07f, 8'hf);
-    // wait_responce(read_reg);
-    //while(~interrupt) begin
-    //  set_inputs(32'h600, 32'h0, 8'h0);
-    //  wait_responce(read_reg);
-    //end
-    $display("Value read from buffer descriptor: %x", read_reg);
+    set_inputs(32'h08, 32'h07f, 8'hf);
+    wait_responce(read_reg);
+    while(~interrupt) begin
+      set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
+      wait_responce(read_reg);
+    end
+    set_inputs(32'h4, 32'h0, 8'h0); // Reading Interrupt Sources register
+    wait_responce(read_reg);
+    $display("Received interrupt signal! INT_SRC value: %x", read_reg);
+    set_inputs(32'h600, 32'h0, 8'h0);
+    wait_responce(read_reg);
+    $display("Value read from receiving buffer descriptor: %x", read_reg);
     // Load received buffer from memory
 
     // End of testbench
     @(posedge clk_i) #1 $display("Testbench finished!");
 
     repeat (200) @(posedge clk_i) #1;
+    $finish;
+  end
+
+  initial begin
+    #10000 $display("ERROR: Forced finish!");
     $finish;
   end
 

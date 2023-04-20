@@ -26,8 +26,15 @@ DEFINE+=$(defmacro)N_CORES=$(N_CORES)
 #testbench sources
 VSRC+=$(ETH_DIR)/hardware/simulation/common/iob_ethoc_sim_wrapper.v
 
+# TEST FILE (Contains frame to transfer)
+TEST_FILE = $(ETH_DIR)/hardware/simulation/common/test.txt
+TEST_FILE_HEX = test.hex
+
+$(TEST_FILE_HEX): $(TEST_FILE)
+	$(LIB_DIR)/software/python/makehex.py $(TEST_FILE) 13 > $(TEST_FILE_HEX)
+
 #RULES
-build: $(VSRC) $(VHDR)
+build: $(VSRC) $(VHDR) $(TEST_FILE_HEX)
 ifeq ($(SIM_SERVER),)
 	bash -c "trap 'make kill-sim' INT TERM KILL EXIT; make comp"
 else
