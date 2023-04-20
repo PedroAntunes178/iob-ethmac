@@ -56,10 +56,6 @@ module iob_ethoc_tb;
     $display("Enable full-duplex mode.");
     set_inputs(`ETH_MODER_ADR<<2, 32'h0000A480, 8'hf);
     wait_responce(read_reg);
-    $display("Reading Mode Register.");
-    set_inputs(`ETH_MODER_ADR<<2, 32'h0, 4'h0);
-    wait_responce(read_reg);
-    $display("Value: %x.", read_reg);
 
     // Store transmission buffer to memory
     // // memory is being initialised with data
