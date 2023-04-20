@@ -67,7 +67,7 @@ $(SIM_PROC):
 exec:
 	./$(SIM_PROC)
 ifeq ($(VCD),1)
-	sed -i 's/TOP/iob_ethoc_tb/g' *.vcd
+	sed -i 's/TOP/iob_ethmac_tb/g' *.vcd
 endif
 
 clean: clean-remote
