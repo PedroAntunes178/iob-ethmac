@@ -19,19 +19,29 @@ module iob_ethmac_sim_wrapper #(
   output wire ethernet_interrupt
   );
 
-`ifdef VCD
+  integer phy_log_file_desc;
+
   initial begin
+    phy_log_file_desc = $fopen("../log/eth_tb_phy.log");
+    if (phy_log_file_desc < 2)
+    begin
+      $display("*E Could not open/create eth_tb_phy.log file in ../log/ directory!");
+      $finish;
+    end
+    $fdisplay(phy_log_file_desc, "================ PHY Module  Testbench access log ================");
+    $fdisplay(phy_log_file_desc, " ");
+`ifdef VCD
     $dumpfile("iob_ethmac.vcd");
     $dumpvars(0, iob_ethmac_sim_wrapper);
-  end
 `endif
+  end
 
   localparam SRAM_ADDR_W = 13;
 
   // ETH interface
   wire       mii_rx_clk;
-  wire [3:0] mii_rxd_r;
-  wire       mii_rx_dv_r;
+  wire [3:0] mii_rxd;
+  wire       mii_rx_dv;
   wire       mii_rx_er;
   wire       mii_rx_ctrl;
   wire       mii_tx_clk;
@@ -40,6 +50,8 @@ module iob_ethmac_sim_wrapper #(
   wire       mii_tx_er;
   wire       mii_mdc;
   wire       mii_mdio;
+  wire       mii_coll;
+  wire       mii_crs;
 
   // IOb master interface
   wire                m_valid;
@@ -49,9 +61,7 @@ module iob_ethmac_sim_wrapper #(
   wire [DATA_W-1:0]   m_rdata;
   wire                m_ready;
 
-  assign mii_rx_er = 1'b0;
-  iob_reg #(4,0) iob_reg_rxd (eth_clk_i, arst_i, 1'b0, 1'b1, mii_txd, mii_rxd_r);
-  iob_reg #(1,0) iob_reg_rx_dv (eth_clk_i, arst_i, 1'b0, 1'b1, mii_tx_en, mii_rx_dv_r);
+  assign mii_rx_ctrl = 1'b0;
 
   iob_ethmac #(
     //IOb-bus Parameters
@@ -77,8 +87,8 @@ module iob_ethmac_sim_wrapper #(
     .m_ready(m_ready),
 
     .mii_rx_clk_i(mii_rx_clk),
-    .mii_rxd_i(mii_rxd_r),
-    .mii_rx_dv_i(mii_rx_dv_r),
+    .mii_rxd_i(mii_rxd),
+    .mii_rx_dv_i(mii_rx_dv),
     .mii_rx_er_i(mii_rx_er),
     .mii_rx_ctrl_i(mii_rx_ctrl),
     .mii_tx_clk_i(mii_tx_clk),
@@ -87,12 +97,11 @@ module iob_ethmac_sim_wrapper #(
     .mii_tx_er_o(mii_tx_er),
     .mii_mdc_o(mii_mdc),
     .mii_mdio_io(mii_mdio),
+    .mii_coll_i(mii_coll),
+    .mii_crs_i(mii_crs),
 
     .eth_int_o(ethernet_interrupt)
     );
-
-  assign mii_tx_clk = eth_clk_i;
-  assign mii_rx_clk = eth_clk_i;
 
   // Simulation memory
   iob_ram_sp_be #(
@@ -111,5 +120,23 @@ module iob_ethmac_sim_wrapper #(
     );
   
   iob_reg #(1,0) iob_reg_s_ready (clk_i, arst_i, 1'b0, 1'b1, m_valid, m_ready);
+
+  eth_phy eth_phy (
+    // WISHBONE reset
+    .m_rst_n_i(~arst_i),
+
+    // MAC TX
+    .mtx_clk_o(mii_tx_clk),    .mtxd_i(mii_txd),    .mtxen_i(mii_tx_en),    .mtxerr_i(mii_tx_er),
+
+    // MAC RX
+    .mrx_clk_o(mii_rx_clk),    .mrxd_o(mii_rxd),    .mrxdv_o(mii_rx_dv),    .mrxerr_o(mii_rx_er),
+    .mcoll_o(mii_coll),        .mcrs_o(mii_crs),
+
+    // MIIM
+    .mdc_i(mii_mdc),          .md_io(mii_mdio),
+
+    // SYSTEM
+    .phy_log(phy_log_file_desc)
+  );
 
 endmodule

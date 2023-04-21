@@ -35,13 +35,13 @@ module iob_ethmac #(
     output wire       mii_tx_er_o,
     output wire       mii_mdc_o,
     inout  wire       mii_mdio_io,
+    input  wire       mii_coll_i,
+    input  wire       mii_crs_i,
 
     output wire eth_int_o
   );
 
   // ETHERNET wires
-  wire mii_coll; // Collision Detected.
-  wire mii_crs;
   wire mii_mdi_I;
   wire mii_mdo_O;
   wire mii_mdo_OE;
@@ -74,8 +74,8 @@ module iob_ethmac #(
   // // Connecting Ethernet PHY Module
   assign mii_mdio_io = mii_mdo_OE ? mii_mdo_O : 1'bz ;
   assign mii_mdi_I   = mii_mdio_io;
-  assign mii_coll    = 1'b0; // No collision detection
-  assign mii_crs     = 1'b0; // The media is always in an idle state
+  // assign mii_coll    = 1'b0; // No collision detection
+  // assign mii_crs     = 1'b0; // The media is always in an idle state
   /* In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored. */
   // // Ethernet memory access
   assign m_valid = (m_ETH_wb_cyc & m_ETH_wb_stb)&(~m_ready);
@@ -145,8 +145,8 @@ module iob_ethmac #(
     .mrxd_pad_i(mii_rxd_i),
     .mrxdv_pad_i(mii_rx_dv_i),
     .mrxerr_pad_i(mii_rx_er_i), 
-    .mcoll_pad_i(mii_coll),
-    .mcrs_pad_i(mii_crs), 
+    .mcoll_pad_i(mii_coll_i),
+    .mcrs_pad_i(mii_crs_i), 
     
     // MIIM
     .mdc_pad_o(mii_mdc_o),
