@@ -506,7 +506,7 @@ begin
 
   //  Call tests
   //  ----------
-  // // test_access_to_mac_reg(0, 4);           // 0 - 4
+  test_access_to_mac_reg(0, 4);           // 0 - 4
   // // test_mii(0, 17);                        // 0 - 17
   // // $display("");
   // // $display("===========================================================================");
@@ -536,7 +536,7 @@ begin
   // Finish test's logs
   test_summary;
   $display("\n\n END of SIMULATION");
-  $fclose(phy_log_file_desc | memory_log_file_desc | host_log_file_desc);
+  $fclose(tb_log_file | phy_log_file_desc | memory_log_file_desc | host_log_file_desc);
   $fclose(wb_s_mon_log_file_desc | wb_m_mon_log_file_desc);
 
   $finish;
@@ -24722,7 +24722,6 @@ begin
   $fdisplay(tb_log_file, "Failed tests   :   %d", tests_failed) ;
   $fdisplay(tb_log_file, "Successfull tests: %d", tests_successfull) ;
   $fdisplay(tb_log_file, "**************************** Ethernet MAC test summary **********************************") ;
-  $fclose(tb_log_file) ;
 end
 endtask // test_summary
 
