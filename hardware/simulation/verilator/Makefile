@@ -8,7 +8,7 @@ incdir:=-I
 SIMULATOR=verilator
 SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
-SIM_PROC=V$(TOP_MODULE)_sim_wrapper
+SIM_PROC=Vtb_ethernet
 
 
 include ../simulation.mk
@@ -49,11 +49,11 @@ VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --coverage # Generate coverage analysis
 #VERILATOR_FLAGS += --debug # Run Verilator in debug mode
 #VERILATOR_FLAGS += --gdbbt # Add this trace to get a backtrace in gdb
-VERILATOR_FLAGS += +1800-2005ext+v # Use SystemVerilog 2005 with file extension .v
+VERILATOR_FLAGS += +1364-2005ext+v # Use SystemVerilog 2005 with file extension .v
 VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
 
 # Verilator source files
-VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module $(TOP_MODULE)_sim_wrapper $(TOP_MODULE)_tb.cpp
+VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module tb_ethernet $(TOP_MODULE)_tb.cpp
 ######################################################################
 
 comp: $(SIM_PROC)
@@ -66,12 +66,10 @@ $(SIM_PROC):
 #run the simulator
 exec:
 	./$(SIM_PROC)
-ifeq ($(VCD),1)
-	sed -i 's/TOP/iob_ethmac_tb/g' *.vcd
-endif
 
 clean: clean-remote
 	@rm -f $(SIM_PROC)
 	@rm -rf obj_dir
+	@rm -f V*
 
 .PHONY: comp exec clean

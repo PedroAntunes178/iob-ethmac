@@ -69,6 +69,8 @@ endif
 #clean target common to all simulators
 clean-remote: ethernet_hw_clean
 	@rm -f iob_ethmac.vcd
+	@rm -f *.log ../log/*.log
+	@rm -f *.hex
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ETH_DIR) ]; then mkdir -p $(REMOTE_ETH_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ETH_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ETH_DIR)

@@ -68,7 +68,7 @@
 module WB_BUS_MON(
                     CLK_I,
                     RST_I,
-	            ACK_I,
+	                ACK_I,
                     ADDR_O,
                     CYC_O,
                     DAT_I,
@@ -85,23 +85,23 @@ module WB_BUS_MON(
                     log_file_desc
                   ) ;
 
-input                           CLK_I  ;
-input                           RST_I  ;
-input                           ACK_I  ;
-input   [(`WB_ADDR_WIDTH-1):0]  ADDR_O ;
-input                           CYC_O  ;
-input   [(`WB_DATA_WIDTH-1):0]  DAT_I  ;
-input   [(`WB_DATA_WIDTH-1):0]  DAT_O  ;
-input                           ERR_I  ;
-input                           RTY_I  ;
-input   [(`WB_SEL_WIDTH-1):0]   SEL_O  ;
-input                           STB_O  ;
-input                           WE_O   ;
-input   [(`WB_TAG_WIDTH-1):0] TAG_I  ;
-input   [(`WB_TAG_WIDTH-1):0] TAG_O  ;
-input                           CAB_O  ;
-input                           check_CTI ;
-input [31:0] log_file_desc ;
+input                        CLK_I  ;
+input                        RST_I  ;
+input                        ACK_I  ;
+input [(`WB_ADDR_WIDTH-1):0] ADDR_O ;
+input                        CYC_O  ;
+input [(`WB_DATA_WIDTH-1):0] DAT_I  ;
+input [(`WB_DATA_WIDTH-1):0] DAT_O  ;
+input                        ERR_I  ;
+input                        RTY_I  ;
+input [(`WB_SEL_WIDTH-1):0]  SEL_O  ;
+input                        STB_O  ;
+input                        WE_O   ;
+input [(`WB_TAG_WIDTH-1):0]  TAG_I  ;
+input [(`WB_TAG_WIDTH-1):0]  TAG_O  ;
+input                        CAB_O  ;
+input                        check_CTI ;
+input [31:0]                 log_file_desc ;
 
 always@(posedge CLK_I)
 begin

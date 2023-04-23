@@ -507,16 +507,16 @@ begin
   //  Call tests
   //  ----------
   test_access_to_mac_reg(0, 4);           // 0 - 4
-  // // test_mii(0, 17);                        // 0 - 17
-  // // $display("");
-  // // $display("===========================================================================");
-  // // $display("PHY generates ideal Carrier sense and Collision signals for following tests");
-  // // $display("===========================================================================");
-  // // test_note("PHY generates ideal Carrier sense and Collision signals for following tests");
-  // // eth_phy.carrier_sense_real_delay(0);
-  // // test_mac_full_duplex_transmit(0, 23);    // 0 - 23
-  // // test_mac_full_duplex_receive(0, 15);     // 0 - 15
-  // // test_mac_full_duplex_flow_control(0, 5); // 0 - 5
+  test_mii(0, 17);                        // 0 - 17
+  $display("");
+  $display("===========================================================================");
+  $display("PHY generates ideal Carrier sense and Collision signals for following tests");
+  $display("===========================================================================");
+  test_note("PHY generates ideal Carrier sense and Collision signals for following tests");
+  eth_phy.carrier_sense_real_delay(0);
+  test_mac_full_duplex_transmit(0, 23);    // 0 - 23
+  test_mac_full_duplex_receive(0, 15);     // 0 - 15
+  test_mac_full_duplex_flow_control(0, 5); // 0 - 5
 
   // Tests not working, yet.
   // test_mac_half_duplex_flow(0, 5);  // 0, 1, 2, 3, 4, 5 These tests need to be fixed !!!
