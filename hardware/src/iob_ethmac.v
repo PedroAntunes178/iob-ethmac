@@ -12,7 +12,7 @@ module iob_ethmac #(
     input wire rst,
     
     input  wire                s_valid,
-    input  wire [ADDR_W-1:2]   s_address,
+    input  wire [ADDR_W-1:0]   s_address,
     input  wire [DATA_W-1:0]   s_wdata,
     input  wire [DATA_W/8-1:0] s_wstrb,
     output wire [DATA_W-1:0]   s_rdata,
@@ -57,7 +57,7 @@ module iob_ethmac #(
   wire m_wb_ack;
   wire m_wb_err;
   // // Wichbone slave
-  wire [ADDR_W-1:2] s_wb_addr;
+  wire [ADDR_W-1:0] s_wb_addr;
   wire [DATA_W-1:0] s_wb_data_in;
   wire [DATA_W-1:0] s_wb_data_out;
   wire s_wb_we;
@@ -76,7 +76,7 @@ module iob_ethmac #(
   /* In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored. */
 
   iob_iob2wishbone #(
-    ADDR_W-2, DATA_W
+    ADDR_W, DATA_W
   ) iob2wishbone (
     clk, rst,
     s_valid, s_address, s_wdata, s_wstrb, s_rdata, s_ready,
@@ -98,7 +98,7 @@ module iob_ethmac #(
     .wb_rst_i(rst), 
 
     // WISHBONE slave
-    .wb_adr_i(s_wb_addr),
+    .wb_adr_i(s_wb_addr[ADDR_W-1:2]),
     .wb_sel_i(s_wb_select),
     .wb_we_i(s_wb_we), 
     .wb_cyc_i(s_wb_cyc),

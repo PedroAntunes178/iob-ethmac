@@ -203,7 +203,7 @@ iob_ethmac_sim_wrapper eth_sim_wrapper
   .wb_clk_i(wb_clk),              .wb_rst_i(wb_rst), 
 
   // WISHBONE slave
-  .wb_adr_i(eth_sl_wb_adr_i[11:2]), .wb_sel_i(eth_sl_wb_sel_i),   .wb_we_i(eth_sl_wb_we_i), 
+  .wb_adr_i(eth_sl_wb_adr_i[11:0]), .wb_sel_i(eth_sl_wb_sel_i),   .wb_we_i(eth_sl_wb_we_i), 
   .wb_cyc_i(eth_sl_wb_cyc_i),       .wb_stb_i(eth_sl_wb_stb_i),   .wb_ack_o(eth_sl_wb_ack_o), 
   .wb_err_o(eth_sl_wb_err_o),       .wb_dat_i(eth_sl_wb_dat_i),   .wb_dat_o(eth_sl_wb_dat_o), 
  	
@@ -502,7 +502,7 @@ begin
   wb_slave.cycle_response(`ACK_RESPONSE, wbs_waits, wbs_retries);
 
   // set DIFFERENT mrx_clk to mtx_clk!
-//  eth_phy.set_mrx_equal_mtx = 1'b0;
+  // // eth_phy.set_mrx_equal_mtx = 1'b0;
 
   //  Call tests
   //  ----------
@@ -536,10 +536,10 @@ begin
   // Finish test's logs
   test_summary;
   $display("\n\n END of SIMULATION");
-  $fclose(tb_log_file | phy_log_file_desc | memory_log_file_desc | host_log_file_desc);
+  $fclose(phy_log_file_desc | memory_log_file_desc | host_log_file_desc);
   $fclose(wb_s_mon_log_file_desc | wb_m_mon_log_file_desc);
 
-  $stop;
+  $finish;
 end
   
 
