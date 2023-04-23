@@ -27,7 +27,7 @@ DEFINE+=$(defmacro)N_CORES=$(N_CORES)
 VSRC+=$(wildcard $(ETH_DIR)/hardware/simulation/common/eth_oc/*.v)  
 VSRC+=$(ETH_DIR)/hardware/simulation/common/iob_ethmac_sim_wrapper.v 
 
-INCLUDE+=$(incdir)$(ETH_DIR)/hardware/simulation/common/eth_oc/
+INCLUDE+=$(incdir)$(ETH_DIR)/hardware/simulation/common/eth_oc
 
 # TEST FILE (Contains frame to transfer)
 TEST_FILE = $(ETH_DIR)/hardware/simulation/common/test.txt
@@ -68,7 +68,7 @@ endif
 
 #clean target common to all simulators
 clean-remote: ethernet_hw_clean
-	@rm -f iob_ethmac.vcd
+	@rm -f *.vcd
 	@rm -f *.log ../log/*.log
 	@rm -f *.hex
 ifneq ($(SIM_SERVER),)

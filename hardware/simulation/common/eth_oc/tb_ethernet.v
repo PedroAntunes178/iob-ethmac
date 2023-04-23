@@ -439,7 +439,7 @@ begin
   $fdisplay(wb_m_mon_log_file_desc, " ");
 
 `ifdef VCD
-   $dumpfile("../build/sim/ethmac.vcd");
+   $dumpfile("ethmac.vcd");
    $dumpvars(0);
 `endif
   // Reset pulse
