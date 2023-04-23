@@ -12,10 +12,10 @@ module iob_ethmac #(
     input wire rst,
     
     input  wire                s_valid,
-    input  wire [ADDR_W-1:0]   s_address,
+    input  wire [ADDR_W-1:2]   s_address,
     input  wire [DATA_W-1:0]   s_wdata,
     input  wire [DATA_W/8-1:0] s_wstrb,
-    output  reg [DATA_W-1:0]   s_rdata,
+    output wire [DATA_W-1:0]   s_rdata,
     output wire                s_ready,
 
     output wire                  m_valid,
@@ -47,17 +47,17 @@ module iob_ethmac #(
   wire mii_mdo_O;
   wire mii_mdo_OE;
   // // Wichbone master
-  wire [MEM_ADDR_W-1:0] m_ETH_wb_adr;
-  wire [DATA_W/8-1:0] m_ETH_wb_sel;
-  wire m_ETH_wb_we;
-  wire [DATA_W-1:0] m_ETH_wb_dat_in;
-  wire [DATA_W-1:0] m_ETH_wb_dat_out;
-  wire m_ETH_wb_cyc;
-  wire m_ETH_wb_stb;
-  wire m_ETH_wb_ack;
-  wire m_ETH_wb_err;
+  wire [MEM_ADDR_W-1:0] m_wb_adr;
+  wire [DATA_W/8-1:0] m_wb_sel;
+  wire m_wb_we;
+  wire [DATA_W-1:0] m_wb_dat_in;
+  wire [DATA_W-1:0] m_wb_dat_out;
+  wire m_wb_cyc;
+  wire m_wb_stb;
+  wire m_wb_ack;
+  wire m_wb_err;
   // // Wichbone slave
-  wire [ADDR_W-1:0] s_wb_addr;
+  wire [ADDR_W-1:2] s_wb_addr;
   wire [DATA_W-1:0] s_wb_data_in;
   wire [DATA_W-1:0] s_wb_data_out;
   wire s_wb_we;
@@ -76,7 +76,7 @@ module iob_ethmac #(
   /* In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored. */
 
   iob_iob2wishbone #(
-    ADDR_W, DATA_W
+    ADDR_W-2, DATA_W
   ) iob2wishbone (
     clk, rst,
     s_valid, s_address, s_wdata, s_wstrb, s_rdata, s_ready,
@@ -87,7 +87,7 @@ module iob_ethmac #(
     MEM_ADDR_W, DATA_W
   ) wishbone2iob (
     clk, rst,
-    m_ETH_wb_adr, m_ETH_wb_sel, m_ETH_wb_we, m_ETH_wb_cyc, m_ETH_wb_stb, m_ETH_wb_dat_out, m_ETH_wb_ack, m_ETH_wb_err, m_ETH_wb_dat_in,
+    m_wb_adr, m_wb_sel, m_wb_we, m_wb_cyc, m_wb_stb, m_wb_dat_out, m_wb_ack, m_wb_err, m_wb_dat_in,
     m_valid, m_addr, m_wdata, m_wstrb, m_rdata, m_ready
   );
 
@@ -98,7 +98,7 @@ module iob_ethmac #(
     .wb_rst_i(rst), 
 
     // WISHBONE slave
-    .wb_adr_i(s_wb_addr[ADDR_W-1:2]),
+    .wb_adr_i(s_wb_addr),
     .wb_sel_i(s_wb_select),
     .wb_we_i(s_wb_we), 
     .wb_cyc_i(s_wb_cyc),
@@ -109,19 +109,19 @@ module iob_ethmac #(
     .wb_dat_o(s_wb_data_out), 
     
     // WISHBONE master
-    .m_wb_adr_o(m_ETH_wb_adr),
-    .m_wb_sel_o(m_ETH_wb_sel),
-    .m_wb_we_o(m_ETH_wb_we),
-    .m_wb_cyc_o(m_ETH_wb_cyc),
-    .m_wb_stb_o(m_ETH_wb_stb),
-    .m_wb_dat_o(m_ETH_wb_dat_out),
-    .m_wb_ack_i(m_ETH_wb_ack),
-    .m_wb_err_i(m_ETH_wb_err), 
-    .m_wb_dat_i(m_ETH_wb_dat_in),
+    .m_wb_adr_o(m_wb_adr),
+    .m_wb_sel_o(m_wb_sel),
+    .m_wb_we_o(m_wb_we),
+    .m_wb_cyc_o(m_wb_cyc),
+    .m_wb_stb_o(m_wb_stb),
+    .m_wb_dat_o(m_wb_dat_out),
+    .m_wb_ack_i(m_wb_ack),
+    .m_wb_err_i(m_wb_err), 
+    .m_wb_dat_i(m_wb_dat_in),
 
   `ifdef ETH_WISHBONE_B3
-    .m_wb_cti_o(eth_ma_wb_cti_o),
-    .m_wb_bte_o(eth_ma_wb_bte_o),
+    .m_wb_cti_o(m_wb_cti_o),
+    .m_wb_bte_o(m_wb_bte_o),
   `endif
 
     //TX

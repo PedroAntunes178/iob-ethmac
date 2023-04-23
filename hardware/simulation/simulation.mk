@@ -24,7 +24,7 @@ DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
 DEFINE+=$(defmacro)N_CORES=$(N_CORES)
 
 #testbench sources
-VSRC+=$(ETH_DIR)/hardware/simulation/common/eth_oc/eth_phy.v 
+VSRC+=$(wildcard $(ETH_DIR)/hardware/simulation/common/eth_oc/*.v)  
 VSRC+=$(ETH_DIR)/hardware/simulation/common/iob_ethmac_sim_wrapper.v 
 
 INCLUDE+=$(incdir)$(ETH_DIR)/hardware/simulation/common/eth_oc/

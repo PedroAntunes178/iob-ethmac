@@ -4,3 +4,4 @@ hardware/simulation/verilator/obj_dir/*
 hardware/simulation/*/iob_ethmac.vcd
 hardware/simulation/*/test.hex
 hardware/simulation/log/*.log
+hardware/simulation/icarus/*.log

@@ -12,9 +12,9 @@ include ../simulation.mk
 
 VSRC_CP=$(VSRC)
 VSRC:=$(filter-out ../../../hardware/src/eth_oc/xilinx_dist_ram_16x32.v , $(VSRC))
-VSRC+=iob_ethmac_tb.v
+#VSRC+=iob_ethmac_tb.v
 #simulator flags
-VLOG = iverilog -Wall -g2005-sv $(INCLUDE) $(DEFINE)
+VLOG = iverilog -Wall -g2001 $(INCLUDE) $(DEFINE)
 
 comp: $(SIM_PROC)
 
