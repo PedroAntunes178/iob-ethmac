@@ -4,6 +4,7 @@
 module iob_ethmac #(
     //IOb-bus Parameters
     parameter ADDR_W      = 12,
+    parameter MEM_ADDR_W  = 32,
     parameter DATA_W      = 32,
     parameter TARGET      = "XILINX"
   )(
@@ -17,12 +18,12 @@ module iob_ethmac #(
     output  reg [DATA_W-1:0]   s_rdata,
     output wire                s_ready,
 
-    output wire                m_valid,
-    output wire [31:0]         m_addr,
-    output wire [DATA_W-1:0]   m_wdata,
-    output wire [DATA_W/8-1:0] m_wstrb,
-    input  wire [DATA_W-1:0]   m_rdata,
-    input  wire                m_ready,
+    output wire                  m_valid,
+    output wire [MEM_ADDR_W-1:0] m_addr,
+    output wire [DATA_W-1:0]     m_wdata,
+    output wire [DATA_W/8-1:0]   m_wstrb,
+    input  wire [DATA_W-1:0]     m_rdata,
+    input  wire                  m_ready,
 
     input  wire       mii_rx_clk_i,
     input  wire [3:0] mii_rxd_i,
@@ -46,7 +47,7 @@ module iob_ethmac #(
   wire mii_mdo_O;
   wire mii_mdo_OE;
   // // Wichbone master
-  wire [32-1:0] m_ETH_wb_adr;
+  wire [MEM_ADDR_W-1:0] m_ETH_wb_adr;
   wire [DATA_W/8-1:0] m_ETH_wb_sel;
   wire m_ETH_wb_we;
   wire [DATA_W-1:0] m_ETH_wb_dat_in;
@@ -55,8 +56,7 @@ module iob_ethmac #(
   wire m_ETH_wb_stb;
   wire m_ETH_wb_ack;
   wire m_ETH_wb_err;
-
-  // IOb2Wishbone wires
+  // // Wichbone slave
   wire [ADDR_W-1:0] s_wb_addr;
   wire [DATA_W-1:0] s_wb_data_in;
   wire [DATA_W-1:0] s_wb_data_out;
@@ -84,7 +84,7 @@ module iob_ethmac #(
   );
 
   iob_wishbone2iob #(
-    ADDR_W, DATA_W
+    MEM_ADDR_W, DATA_W
   ) wishbone2iob (
     clk, rst,
     m_ETH_wb_adr, m_ETH_wb_sel, m_ETH_wb_we, m_ETH_wb_cyc, m_ETH_wb_stb, m_ETH_wb_dat_out, m_ETH_wb_ack, m_ETH_wb_err, m_ETH_wb_dat_in,
