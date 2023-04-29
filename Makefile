@@ -5,12 +5,8 @@ include ./config.mk
 #
 # SIMULATE RTL
 #
-
-sim-build:
-	make -C $(ETH_SIM_DIR) build
-
-sim-run: sim-build
-	make -C $(ETH_SIM_DIR) run
+sim-run:
+	$(MAKE) -C $(ETH_SIM_DIR) run
 
 sim-clean:
 	make -C $(ETH_SIM_DIR) clean

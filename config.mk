@@ -20,9 +20,7 @@ ADDR_W ?=12
 REMOTE_ETH_DIR ?=sandbox/iob_ethmac
 
 #SIMULATION
-#default simulator running locally or remotely
-#check the respective Makefile in hardware/simulation/$(SIMULATOR) for specific settings
-SIMULATOR ?=icarus
+# Uses Open Cores Ethernet original testbench
 
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
@@ -33,11 +31,11 @@ ETH_SW_DIR=$(ETH_DIR)/software
 
 #hw paths
 ETH_HW_DIR=$(ETH_DIR)/hardware
-ETH_SIM_DIR=$(ETH_HW_DIR)/simulation/$(SIMULATOR)
+ETH_SIM_DIR=$(ETH_HW_DIR)/simulation
 
 LIB_DIR?=$(ETH_DIR)/submodules/LIB
 MEM_DIR:=$(LIB_DIR)
-VETH_DIR?=$(ETH_DIR)/submodules/verilog-ethernet
+ETHOC_DIR?=$(ETH_DIR)/submodules/ETHMAC
 
 #RULES
 ethernet_gen_clean:
