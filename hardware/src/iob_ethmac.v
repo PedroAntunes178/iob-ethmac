@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+`include "timescale.v"
 `include "ethmac_defines.v"
 
 module iob_ethmac #(
@@ -12,7 +12,7 @@ module iob_ethmac #(
     input wire rst,
     
     input  wire                s_valid,
-    input  wire [ADDR_W-1:0]   s_address,
+    input  wire [ADDR_W-1:2]   s_address,
     input  wire [DATA_W-1:0]   s_wdata,
     input  wire [DATA_W/8-1:0] s_wstrb,
     output wire [DATA_W-1:0]   s_rdata,
@@ -29,13 +29,14 @@ module iob_ethmac #(
     input  wire [3:0] mii_rxd_i,
     input  wire       mii_rx_dv_i,
     input  wire       mii_rx_er_i,
-    input  wire       mii_rx_ctrl_i,
     input  wire       mii_tx_clk_i,
     output wire [3:0] mii_txd_o,
     output wire       mii_tx_en_o,
     output wire       mii_tx_er_o,
+    input  wire       mii_md_i,
     output wire       mii_mdc_o,
-    inout  wire       mii_mdio_io,
+    output wire       mii_md_o,
+    output wire       mii_mdoe_o,
     input  wire       mii_coll_i,
     input  wire       mii_crs_i,
 
@@ -43,9 +44,6 @@ module iob_ethmac #(
   );
 
   // ETHERNET wires
-  wire mii_mdi_I;
-  wire mii_mdo_O;
-  wire mii_mdo_OE;
   // // Wichbone master
   wire [MEM_ADDR_W-1:0] m_wb_adr;
   wire [DATA_W/8-1:0] m_wb_sel;
@@ -57,7 +55,7 @@ module iob_ethmac #(
   wire m_wb_ack;
   wire m_wb_err;
   // // Wichbone slave
-  wire [ADDR_W-1:0] s_wb_addr;
+  wire [ADDR_W-1:2] s_wb_addr;
   wire [DATA_W-1:0] s_wb_data_in;
   wire [DATA_W-1:0] s_wb_data_out;
   wire s_wb_we;
@@ -67,16 +65,8 @@ module iob_ethmac #(
   wire s_wb_ack;
   wire s_wb_error;
 
-  // ETHERNET logic
-  // // Connecting Ethernet PHY Module
-  assign mii_mdio_io = mii_mdo_OE ? mii_mdo_O : 1'bz ;
-  assign mii_mdi_I   = mii_mdio_io;
-  // assign mii_coll    = 1'b0; // No collision detection
-  // assign mii_crs     = 1'b0; // The media is always in an idle state
-  /* In full-duplex mode, the Carrier Sense and the Collision Detect signals are ignored. */
-
   iob_iob2wishbone #(
-    ADDR_W, DATA_W
+    ADDR_W-2, DATA_W
   ) iob2wishbone (
     clk, rst,
     s_valid, s_address, s_wdata, s_wstrb, s_rdata, s_ready,
@@ -98,7 +88,7 @@ module iob_ethmac #(
     .wb_rst_i(rst), 
 
     // WISHBONE slave
-    .wb_adr_i(s_wb_addr[ADDR_W-1:2]),
+    .wb_adr_i(s_wb_addr),
     .wb_sel_i(s_wb_select),
     .wb_we_i(s_wb_we), 
     .wb_cyc_i(s_wb_cyc),
@@ -135,14 +125,16 @@ module iob_ethmac #(
     .mrxd_pad_i(mii_rxd_i),
     .mrxdv_pad_i(mii_rx_dv_i),
     .mrxerr_pad_i(mii_rx_er_i), 
+
+    // Common Tx and Rx
     .mcoll_pad_i(mii_coll_i),
     .mcrs_pad_i(mii_crs_i), 
     
     // MIIM
     .mdc_pad_o(mii_mdc_o),
-    .md_pad_i(mii_mdi_I),
-    .md_pad_o(mii_mdo_O),
-    .md_padoe_o(mii_mdo_OE),
+    .md_pad_i(mii_md_i),
+    .md_pad_o(mii_md_o),
+    .md_padoe_o(mii_mdoe_o),
     
     .int_o(eth_int_o)
 

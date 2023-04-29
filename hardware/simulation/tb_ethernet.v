@@ -145,11 +145,11 @@
 //
 
 
-`timescale 1ns / 1ps
 `include "eth_phy_defines.v"
 `include "wb_model_defines.v"
 `include "tb_eth_defines.v"
 `include "ethmac_defines.v"
+`include "timescale.v"
 
 module tb_ethernet();
 
@@ -203,7 +203,7 @@ iob_ethmac_sim_wrapper eth_sim_wrapper
   .wb_clk_i(wb_clk),              .wb_rst_i(wb_rst), 
 
   // WISHBONE slave
-  .wb_adr_i(eth_sl_wb_adr_i[11:0]), .wb_sel_i(eth_sl_wb_sel_i),   .wb_we_i(eth_sl_wb_we_i), 
+  .wb_adr_i(eth_sl_wb_adr_i[11:2]), .wb_sel_i(eth_sl_wb_sel_i),   .wb_we_i(eth_sl_wb_we_i), 
   .wb_cyc_i(eth_sl_wb_cyc_i),       .wb_stb_i(eth_sl_wb_stb_i),   .wb_ack_o(eth_sl_wb_ack_o), 
   .wb_err_o(eth_sl_wb_err_o),       .wb_dat_i(eth_sl_wb_dat_i),   .wb_dat_o(eth_sl_wb_dat_o), 
  	
@@ -224,16 +224,16 @@ iob_ethmac_sim_wrapper eth_sim_wrapper
   .mcoll_pad_i(MColl),    .mcrs_pad_i(MCrs), 
   
   // MIIM
-  .mdc_pad_o(Mdc_O), .md_pad_io(Mdio_IO),
+  .mdc_pad_o(Mdc_O), .md_pad_i(Mdi_I), .md_pad_o(Mdo_O), .md_padoe_o(Mdo_OE),
   
   .int_o(wb_int)
 
   // Bist
 `ifdef ETH_BIST
   ,
-  .mbist_si_i   (1'b0),
-  .mbist_so_o   (),
-  .mbist_ctrl_i (3'b001) // {enable, clock, reset}
+  .mbist_si_i       (1'b0),
+  .mbist_so_o       (),
+  .mbist_ctrl_i       (3'b001) // {enable, clock, reset}
 `endif
 );
 
@@ -439,7 +439,7 @@ begin
   $fdisplay(wb_m_mon_log_file_desc, " ");
 
 `ifdef VCD
-   $dumpfile("ethmac.vcd");
+   $dumpfile("../build/sim/ethmac.vcd");
    $dumpvars(0);
 `endif
   // Reset pulse
@@ -502,7 +502,7 @@ begin
   wb_slave.cycle_response(`ACK_RESPONSE, wbs_waits, wbs_retries);
 
   // set DIFFERENT mrx_clk to mtx_clk!
-  // // eth_phy.set_mrx_equal_mtx = 1'b0;
+//  eth_phy.set_mrx_equal_mtx = 1'b0;
 
   //  Call tests
   //  ----------
@@ -521,17 +521,17 @@ begin
   // Tests not working, yet.
   // test_mac_half_duplex_flow(0, 5);  // 0, 1, 2, 3, 4, 5 These tests need to be fixed !!!
 
-  // // $display("");
-  // // $display("===========================================================================");
-  // // $display("PHY generates 'real delayed' Carrier sense and Collision signals for following tests");
-  // // $display("===========================================================================");
-  // // test_note("PHY generates 'real delayed' Carrier sense and Collision signals for following tests");
-  // // eth_phy.carrier_sense_real_delay(1);
-  // // test_mac_full_duplex_transmit(0, 23);    // 0 - 23
-  // // test_mac_full_duplex_receive(0, 15);     // 0 - 15
-  // // test_mac_full_duplex_flow_control(0, 5); // 0 - 5
+  $display("");
+  $display("===========================================================================");
+  $display("PHY generates 'real delayed' Carrier sense and Collision signals for following tests");
+  $display("===========================================================================");
+  test_note("PHY generates 'real delayed' Carrier sense and Collision signals for following tests");
+  eth_phy.carrier_sense_real_delay(1);
+  test_mac_full_duplex_transmit(0, 23);    // 0 - 23
+  test_mac_full_duplex_receive(0, 15);     // 0 - 15
+  test_mac_full_duplex_flow_control(0, 5); // 0 - 5
   //test_mac_half_duplex_flow(0, 5);
-
+ 
  
   // Finish test's logs
   test_summary;
@@ -539,7 +539,7 @@ begin
   $fclose(tb_log_file | phy_log_file_desc | memory_log_file_desc | host_log_file_desc);
   $fclose(wb_s_mon_log_file_desc | wb_m_mon_log_file_desc);
 
-  $finish;
+  $stop;
 end
   
 

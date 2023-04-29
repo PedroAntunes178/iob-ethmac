@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`include "timescale.v"
 
 module iob_ethmac_sim_wrapper #(
   parameter MEM_ADDR_W = 32,
@@ -13,7 +13,7 @@ module iob_ethmac_sim_wrapper #(
   output wire         wb_err_o,     // WISHBONE error output
 
   // WISHBONE slave
-  input  wire [ADDR_W-1:0] wb_adr_i,     // WISHBONE address input
+  input  wire [ADDR_W-1:2] wb_adr_i,     // WISHBONE address input
   input  wire [3:0]        wb_sel_i,     // WISHBONE byte select input
   input  wire              wb_we_i,      // WISHBONE write enable input
   input  wire              wb_cyc_i,     // WISHBONE cycle input
@@ -31,10 +31,8 @@ module iob_ethmac_sim_wrapper #(
   input  wire         m_wb_ack_i,
   input  wire         m_wb_err_i,
 
-`ifdef ETH_WISHBONE_B3
   output wire  [2:0]  m_wb_cti_o,   // Cycle Type Identifier
   output wire  [1:0]  m_wb_bte_o,   // Burst Type Extension
-`endif
 
   // Tx
   input  wire         mtx_clk_pad_i, // Transmit clock (from PHY)
@@ -53,8 +51,10 @@ module iob_ethmac_sim_wrapper #(
   input  wire         mcrs_pad_i,    // Carrier sense (from PHY)
 
   // MII wireManagement interface
-  inout  wire         md_pad_io,     // MII data input/output (from I/O cell)
+  input  wire         md_pad_i,      // MII data input (from I/O cell)
   output wire         mdc_pad_o,     // MII Management data clock (to PHY)
+  output wire         md_pad_o,      // MII data output (to I/O cell)
+  output wire         md_padoe_o,    // MII data output enable (to I/O cell)
 
   output wire         int_o          // Interrupt output
 
@@ -74,7 +74,7 @@ module iob_ethmac_sim_wrapper #(
   wire ethernet_interrupt;
   // // Slave interface
   wire s_valid;
-  wire [ADDR_W-1:0]   s_address;
+  wire [ADDR_W-1:2]   s_address;
   wire [DATA_W-1:0]   s_wdata;
   wire [DATA_W/8-1:0] s_wstrb;
   wire [DATA_W-1:0]   s_rdata;
@@ -86,13 +86,10 @@ module iob_ethmac_sim_wrapper #(
   wire [DATA_W/8-1:0]   m_wstrb;
   wire [DATA_W-1:0]     m_rdata;
   wire m_ready;
-  // // Ethernet MII
-  wire mii_rx_ctrl;
 
   // Logic
   assign clk_i = wb_clk_i;
   assign arst_i = wb_rst_i;
-  assign mii_rx_ctrl = 1'b0;
   assign int_o = ethernet_interrupt;
 
 
@@ -105,7 +102,7 @@ module iob_ethmac_sim_wrapper #(
   );
 
   iob_wishbone2iob #(
-    ADDR_W, DATA_W
+    ADDR_W-2, DATA_W
   ) wishbone2iob (
     clk_i, arst_i,
     wb_adr_i, wb_sel_i, wb_we_i, wb_cyc_i, wb_stb_i,  wb_dat_i, wb_ack_o, wb_err_o,  wb_dat_o,
@@ -140,13 +137,14 @@ module iob_ethmac_sim_wrapper #(
     .mii_rxd_i(mrxd_pad_i),
     .mii_rx_dv_i(mrxdv_pad_i),
     .mii_rx_er_i(mrxerr_pad_i),
-    .mii_rx_ctrl_i(mii_rx_ctrl),
     .mii_tx_clk_i(mtx_clk_pad_i),
     .mii_txd_o(mtxd_pad_o),
     .mii_tx_en_o(mtxen_pad_o),
     .mii_tx_er_o(mtxerr_pad_o),
+    .mii_md_i(md_pad_i),
     .mii_mdc_o(mdc_pad_o),
-    .mii_mdio_io(md_pad_io),
+    .mii_md_o(md_pad_o),
+    .mii_mdoe_o(md_padoe_o),
     .mii_coll_i(mcoll_pad_i),
     .mii_crs_i(mcrs_pad_i),
 

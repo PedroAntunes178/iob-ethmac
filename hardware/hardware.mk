@@ -17,8 +17,7 @@ VHDR+=$(wildcard $(ETH_INC_DIR)/*.vh)
 INCLUDE+=$(incdir). $(incdir)$(ETH_INC_DIR)
 
 #sources
-VSRC+=$(ETH_SRC_DIR)/iob_ethmac.v $(ETH_SRC_DIR)/iob_iob2wishbone.v $(ETH_SRC_DIR)/iob_wishbone2iob.v 
-VSRC+=$(wildcard $(ETH_SRC_DIR)/eth_oc/*.v) 
+VSRC+=$(wildcard $(ETH_SRC_DIR)/*.v) 
 
 ethernet_hw_clean: ethernet_gen_clean
 	@rm -f *.vh
