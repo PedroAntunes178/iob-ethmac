@@ -45,13 +45,13 @@ module iob_iob2wishbone #(
     assign wb_data_o = valid_i? wdata_i:wdata_r;
     assign wb_select_o = valid_i? wb_select:wb_select_r;
     assign wb_we_o = valid_i? wb_we:wb_we_r;
-    assign wb_cyc_o = wb_stb_o;
-    assign wb_stb_o = valid_i|valid_r;
+    assign wb_cyc_o = valid_r;
+    assign wb_stb_o = (valid_r)&((~ready)|(valid_i));
 
-    assign wb_select = wb_we? wstrb_i:4'hf;
+    assign wb_select = wb_we? wstrb_i:1<<address_i[1:0];
     assign wb_we = |wstrb_i;
 
-    iob_reg #(1,0) iob_reg_valid (clk_i, arst_i, ready, valid_i, 1'b1, valid_r);
+    iob_reg #(1,0) iob_reg_valid (clk_i, arst_i, 1'b0, 1'b1, valid_i, valid_r);
     iob_reg #(1,0) iob_reg_we (clk_i, arst_i, 1'b0, valid_i, wb_we, wb_we_r);
     iob_reg #(ADDR_W,0) iob_reg_addr (clk_i, arst_i, 1'b0, valid_i, address_i, address_r);
     iob_reg #(DATA_W,0) iob_reg_iob_data (clk_i, arst_i, 1'b0, valid_i, wdata_i, wdata_r);

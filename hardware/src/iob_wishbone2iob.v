@@ -39,7 +39,7 @@ module iob_wishbone2iob #(
     wire [DATA_W-1:0] wb_data_r;
 
     // Logic
-    assign valid_o = (valid)&(~valid_r);
+    assign valid_o = (valid)&(~ready_i);
     assign address_o  = valid? wb_addr_i:wb_addr_r;
     assign wdata_o = valid? wb_data_i:wb_data_r;
     assign wstrb_o = valid? wstrb:wstrb_r;
