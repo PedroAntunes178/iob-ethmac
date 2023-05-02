@@ -34,8 +34,10 @@ ETH_HW_DIR=$(ETH_DIR)/hardware
 ETH_SIM_DIR=$(ETH_HW_DIR)/simulation
 
 LIB_DIR?=$(ETH_DIR)/submodules/LIB
-MEM_DIR:=$(LIB_DIR)
 ETHOC_DIR?=$(ETH_DIR)/submodules/ETHMAC
+WB2AXIL_DIR:=$(ETH_DIR)/submodules/WB2AXIL
+
+MEM_DIR:=$(LIB_DIR)
 
 #RULES
 ethernet_gen_clean:
