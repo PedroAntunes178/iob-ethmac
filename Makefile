@@ -11,8 +11,6 @@ sim-run:
 sim-clean:
 	make -C $(ETH_SIM_DIR) clean
 
-sim: sim-run sim-clean
-
 #
 # BUILD TARGETS
 #
