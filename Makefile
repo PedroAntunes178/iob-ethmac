@@ -11,6 +11,12 @@ sim-run:
 sim-clean:
 	make -C $(ETH_SIM_DIR) clean
 
+vcd:
+	gtkwave $(ETHOC_DIR)/build/sim/ethmac.vcd &
+
+logs:
+	cat $(ETHOC_DIR)/log/eth_tb.log 
+
 #
 # BUILD TARGETS
 #
