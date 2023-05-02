@@ -4,3 +4,6 @@
 [submodule "submodules/ETHMAC"]
 	path = submodules/ETHMAC
 	url = git@github.com:IObundle/ethmac.git
+[submodule "submodules/WB2AXIL"]
+	path = submodules/WB2AXIL
+	url = git@github.com:ZipCPU/wb2axip.git
