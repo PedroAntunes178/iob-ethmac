@@ -28,7 +28,7 @@ module iob_iob2wishbone #(
     input  wire [DATA_W-1:0]   wb_data_i
 );
     
-    localparam RB_MASK = 1<<<(READ_BYTES-1);
+    localparam RB_MASK = {1'b0, {READ_BYTES{1'b1}}};
 
     // IOb auxiliar wires
     wire                valid_r;

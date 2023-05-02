@@ -74,7 +74,7 @@ module iob_ethmac_sim_wrapper #(
   wire ethernet_interrupt;
   // // Slave interface
   wire s_valid;
-  wire [ADDR_W-1:2]   s_address;
+  wire [ADDR_W-1:0]   s_address;
   wire [DATA_W-1:0]   s_wdata;
   wire [DATA_W/8-1:0] s_wstrb;
   wire [DATA_W-1:0]   s_rdata;
@@ -102,10 +102,10 @@ module iob_ethmac_sim_wrapper #(
   );
 
   iob_wishbone2iob #(
-    ADDR_W-2, DATA_W
+    ADDR_W, DATA_W
   ) wishbone2iob (
     clk_i, arst_i,
-    wb_adr_i, wb_sel_i, wb_we_i, wb_cyc_i, wb_stb_i,  wb_dat_i, wb_ack_o, wb_err_o,  wb_dat_o,
+    {wb_adr_i, 2'b00}, wb_sel_i, wb_we_i, wb_cyc_i, wb_stb_i,  wb_dat_i, wb_ack_o, wb_err_o,  wb_dat_o,
     s_valid, s_address, s_wdata, s_wstrb, s_rdata, s_ready
   );
 
