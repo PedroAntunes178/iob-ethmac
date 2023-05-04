@@ -36,6 +36,7 @@ ETH_SIM_DIR=$(ETH_HW_DIR)/simulation
 LIB_DIR?=$(ETH_DIR)/submodules/LIB
 MEM_DIR:=$(LIB_DIR)
 ETHOC_DIR?=$(ETH_DIR)/submodules/ETHMAC
+ETHOC_HW_DIR:=$(ETHOC_DIR)/rtl/verilog
 
 #RULES
 ethernet_gen_clean:

@@ -19,7 +19,7 @@ module iob_ethmac #(
     output wire                s_ready,
 
     output wire                  m_valid,
-    output wire [MEM_ADDR_W-1:0] m_addr,
+    output wire [MEM_ADDR_W-1:0] m_address,
     output wire [DATA_W-1:0]     m_wdata,
     output wire [DATA_W/8-1:0]   m_wstrb,
     input  wire [DATA_W-1:0]     m_rdata,
@@ -78,7 +78,7 @@ module iob_ethmac #(
   ) wishbone2iob (
     clk, rst,
     m_wb_adr, m_wb_sel, m_wb_we, m_wb_cyc, m_wb_stb, m_wb_dat_out, m_wb_ack, m_wb_err, m_wb_dat_in,
-    m_valid, m_addr, m_wdata, m_wstrb, m_rdata, m_ready
+    m_valid, m_address, m_wdata, m_wstrb, m_rdata, m_ready
   );
 
   // Connecting Ethernet top module
