@@ -58,7 +58,7 @@ module iob_wishbone2iob #(
     assign wb_error_o = 1'b0;
 
     assign wb_data_mask = {{8{wb_select_i[3]}}, {8{wb_select_i[2]}}, {8{wb_select_i[1]}}, {8{wb_select_i[0]}}};
-    iob_reg #(1,0) iob_reg_ready (clk_i, arst_i, ~valid, ready_i, 1'b1, ready_r);
+    iob_reg #(1,0) iob_reg_ready (clk_i, arst_i, 1'b0, 1'b1, ready_i, ready_r);
     iob_reg #(DATA_W,0) iob_reg_data_o (clk_i, arst_i, 1'b0, ready_i, rdata_i, rdata_r);
 
 

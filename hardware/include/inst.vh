@@ -12,12 +12,12 @@
     .clk(clk_i),
     .rst(arst_i),
 
-    .s_valid(valid),
-    .s_address(address),
-    .s_wdata(wdata),
-    .s_wstrb(wstrb),
-    .s_rdata(rdata),
-    .s_ready(ready),
+    .s_valid(slaves_req[`valid(`ETH)]),
+    .s_address(slaves_req[`address(`ETH,32)]),
+    .s_wdata(slaves_req[`wdata(`ETH)]),
+    .s_wstrb(slaves_req[`wstrb(`ETH)]),
+    .s_rdata(slaves_req[`rdata(`ETH)]),
+    .s_ready(slaves_req[`ready(`ETH)]),
 
     .m_valid(m_eth_valid),
     .m_address(m_eth_address),
