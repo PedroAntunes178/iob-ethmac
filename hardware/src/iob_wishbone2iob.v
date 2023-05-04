@@ -37,6 +37,7 @@ module iob_wishbone2iob #(
     // Wishbone auxiliar wire
     wire [ADDR_W-1:0] wb_addr_r;
     wire [DATA_W-1:0] wb_data_r;
+    wire [DATA_W-1:0] wb_data_mask;
 
     // Logic
     assign valid_o = (valid)&(~ready_i);
@@ -52,9 +53,11 @@ module iob_wishbone2iob #(
     iob_reg #(DATA_W,0) iob_reg_data_i (clk_i, arst_i, 1'b0, valid, wb_data_i, wb_data_r);
     iob_reg #(DATA_W/8,0) iob_reg_strb (clk_i, arst_i, 1'b0, valid, wstrb, wstrb_r);
 
-    assign wb_data_o = ready_i? rdata_i:rdata_r;
+    assign wb_data_o = (ready_i? rdata_i:rdata_r)&(wb_data_mask);
     assign wb_ack_o = ready_i;
     assign wb_error_o = 1'b0;
+
+    assign wb_data_mask = {{8{wb_select_i[3]}}, {8{wb_select_i[2]}}, {8{wb_select_i[1]}}, {8{wb_select_i[0]}}};
     iob_reg #(1,0) iob_reg_ready (clk_i, arst_i, ~valid, ready_i, 1'b1, ready_r);
     iob_reg #(DATA_W,0) iob_reg_data_o (clk_i, arst_i, 1'b0, ready_i, rdata_i, rdata_r);
 
