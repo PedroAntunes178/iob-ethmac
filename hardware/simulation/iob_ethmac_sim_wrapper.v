@@ -81,7 +81,7 @@ module iob_ethmac_sim_wrapper #(
   wire s_ready;
   // // Master interface
   wire m_valid;
-  wire [MEM_ADDR_W-1:0] m_addr;
+  wire [MEM_ADDR_W-1:0] m_address;
   wire [DATA_W-1:0]     m_wdata;
   wire [DATA_W/8-1:0]   m_wstrb;
   wire [DATA_W-1:0]     m_rdata;
@@ -97,7 +97,7 @@ module iob_ethmac_sim_wrapper #(
     MEM_ADDR_W, DATA_W
   ) iob2wishbone (
     clk_i, arst_i,
-    m_valid, m_addr, m_wdata, m_wstrb, m_rdata, m_ready,
+    m_valid, m_address, m_wdata, m_wstrb, m_rdata, m_ready,
     m_wb_adr_o, m_wb_sel_o, m_wb_we_o, m_wb_cyc_o, m_wb_stb_o, m_wb_dat_o, m_wb_ack_i, m_wb_err_i, m_wb_dat_i
   );
 
@@ -127,7 +127,7 @@ module iob_ethmac_sim_wrapper #(
     .s_ready(s_ready),
 
     .m_valid(m_valid),
-    .m_addr(m_addr),
+    .m_address(m_address),
     .m_wdata(m_wdata),
     .m_wstrb(m_wstrb),
     .m_rdata(m_rdata),
