@@ -5,7 +5,7 @@
   //
   iob_ethmac #(
     //IOb-bus Parameters
-    .ADDR_W(ADDR_W),
+    .ADDR_W(12),
     .DATA_W(DATA_W),
     .TARGET("SIM")
   ) eth_0 (
@@ -13,7 +13,7 @@
     .rst(arst_i),
 
     .s_valid(slaves_req[`valid(`ETH)]),
-    .s_address(slaves_req[`address(`ETH,32)]),
+    .s_address(slaves_req[`address(`ETH,12)]),
     .s_wdata(slaves_req[`wdata(`ETH)]),
     .s_wstrb(slaves_req[`wstrb(`ETH)]),
     .s_rdata(slaves_req[`rdata(`ETH)]),
@@ -26,16 +26,16 @@
     .m_rdata(m_eth_rdata),
     .m_ready(m_eth_ready),
 
-    .mii_rx_clk_i(mii_rx_clk),
-    .mii_rxd_i(mii_rxd_r),
-    .mii_rx_dv_i(mii_rx_dv),
-    .mii_rx_er_i(mii_rx_er),
-    .mii_tx_clk_i(mii_tx_clk),
-    .mii_txd_o(mii_txd),
-    .mii_tx_en_o(mii_tx_en),
-    .mii_tx_er_o(mii_tx_er),
+    .mii_rx_clk_i(mii_rx_clk_i),
+    .mii_rxd_i(mii_rxd_i),
+    .mii_rx_dv_i(mii_rx_dv_i),
+    .mii_rx_er_i(mii_rx_er_i),
+    .mii_tx_clk_i(mii_tx_clk_i),
+    .mii_txd_o(mii_txd_o),
+    .mii_tx_en_o(mii_tx_en_o),
+    .mii_tx_er_o(mii_tx_er_o),
     .mii_md_i(mii_mdi),
-    .mii_mdc_o(mii_mdc),
+    .mii_mdc_o(mii_mdc_o),
     .mii_md_o(mii_mdo),
     .mii_mdoe_o(mii_mdoe),
 
